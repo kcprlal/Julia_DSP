@@ -1,16 +1,15 @@
 include("CPS.jl")
 using CairoMakie
 function szumbialy(N::Int, power::Real)
-    σ = sqrt(P)  # Odchylenie standardowe jest pierwiastkiem z mocy
+    σ = sqrt(P)
 
-    # Generacja próbek szumu o rozkładzie normalnym
     szum = σ * randn(N)
 
     return szum
 end
 
-N = 1000  # Liczba próbek
-P = 0.25  # Moc szumu
+N = 1000  
+P = 0.25  
 
 szum = szumbialy(N, power)
 t=LinRange(0,1000,N)
