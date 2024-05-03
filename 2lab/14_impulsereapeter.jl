@@ -9,5 +9,5 @@ function cw_pulse(g::Function, t1::Real, t2::Real)::Vector{Float64}
 end
 
 t = LinRange(-2, 2, 1000)
-sygn = cw_pulse(CPS.triangular_wave,1,2)
+sygn = cw_pulse(CPS.ramp_wave,1,2)
 lines(t, sygn)
