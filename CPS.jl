@@ -2,13 +2,6 @@ module CPS
 
 using LinearAlgebra
 
-author = Dict{Symbol, String}(
-    :index => "416250",
-    :name  => "Kacper Lalik",
-    :email => "lalik@student.agh.edu.pl",
-    :group => "4",
-)
-
 # Sygnały ciągłe
 cw_rectangular(t::Real; T=1.0)::Real = abs(t)<=T/2 ? 1.0 : 0.0
 cw_triangle(t::Real; T=1.0)::Real = abs(t) <= T  ? (1.0-abs(t)) : 0.0
