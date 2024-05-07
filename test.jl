@@ -1,39 +1,17 @@
-using CairoMakie
 
-function ramp_wave(t::Real)
-    period = 1.0  # Okres fali
-    amplitude = 1.0  # Amplituda fali
-    constant = 0.0  # Składowa stała fali
-    
-    # Normalizacja czasu do przedziału [0, period)
-    t_normalized = mod(t, period)
-    
-    # Obliczenie wartości funkcji w punkcie t
-    if 0 <= t_normalized < 0.5
-        return 2 * t_normalized
-    else
-        return 2 * (t_normalized - 1)
+    function rozwiazanie(;
+        x::Vector{Float64} = [-3.08, -3.45, 1.37, 1.58, 1.05, -0.09, -1.88, -0.89, -1.0, -2.39, -2.02, -1.61, 4.25, -2.78, 2.04, -2.65, 0.77, 2.52, -2.16, 0.1, 4.31, 2.21, 1.7, -1.54, -0.09, 0.7, -4.83, 2.78, -3.11, -1.07, -2.16, -3.36, -3.65, -1.15, 2.79, -3.27, -4.83, 0.61, 0.48, 2.69, 4.67, 3.97, 4.11, -3.48, -4.6, -0.96, -4.99, 0.17, 3.61, 2.47, 2.19, -0.61, -4.48, -3.76],
+        h::Vector{Float64} = [-4.68, -2.24, -3.19, -0.86, -1.74, -4.38, 3.23, 4.34, 0.08, 0.0, -0.36, -4.19, -1.15, 0.36, 3.47, 1.43, -4.25, -2.02, 1.45, 2.88, 4.01, 3.56, 2.39, 0.28],
+    )
+    y = zeros(length(x)+length(h)-1)
+
+    for n in 1:length(y)
+        for k in max(1, n - length(h) + 1):min(n, length(x))
+            y[n] += x[k] * h[n - k + 1]
+        end
     end
-end
 
-function sawtooth_wave(t::Real)
-    period = 1.0  # Okres fali
-    amplitude = 1.0  # Amplituda fali
-    constant = 0.0  # Składowa stała fali
-    
-    # Normalizacja czasu do przedziału [0, period)
-    t_normalized = mod(t, period)
-    
-    # Obliczenie wartości funkcji w punkcie t
-    return 2 * (t_normalized - floor(t_normalized + 0.5))
-end
+    return y
+    end
 
-# Przygotowanie danych
-t_values = LinRange(0, 1, 1000)
-ramp_values = ramp_wave.(t_values)
-sawtooth_values = sawtooth_wave.(t_values)
-
-# Tworzenie wykresu
-lines(t_values, ramp_values, color=:blue, label="Ramp Wave")
-#lines!(t_values, sawtooth_values, color=:red, label="Sawtooth Wave")
-current_figure()
+    wynik=sum(rozwiazanie().^2)
