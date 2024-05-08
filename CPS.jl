@@ -8,12 +8,13 @@ cw_triangle(t::Real; T=1.0)::Real = abs(t) <= T  ? (1.0-abs(t)) : 0.0
 cw_literka_M(t::Real; T=1.0)::Real = abs(t) <= T  ? abs(t) : 0.0
 cw_literka_U(t::Real; T=1.0)::Real = abs(t) <= T  ? t^2 : 0.0
 
+#zapytac sie o te 2 nizej!!!!!!!!!!!!!!
 ramp_wave(t::Real)::Real = t-floor(t)
 sawtooth_wave(t::Real)::Real = -t+floor(t)
 triangular_wave(t::Real)::Real = 2/π*asin(sin(2*π*t))
 square_wave(t::Real)::Real =  sign(sin(pi*(t+0.5)))
 pulse_wave(t::Real, ρ::Real=0.2)::Real = (0 <= mod(t,1) <= ρ) ? 1.0 : 0.0
-impuse_repeater(g::Function, t1::Real, t2::Real)::Function = g(t2-t1) #inaczej (zdjecie w telefonie)
+impuse_repeater(g::Function, t1::Real, t2::Real)::Function = fun -> g(mod(fun - t1, t2 - t1) + t1)
 
 function ramp_wave_bl(t; A=1.0, T=1.0, band=20.0)
     missing
@@ -56,9 +57,9 @@ heaviside(n::Integer)::Real = n>=0 ? (return 1) : (return 0)
 
 # Okna
 rect(N::Integer)::AbstractVector{<:Real} = return ones(N)
-triang(N::Integer)::AbstractVector{<:Real} = 1 .- abs.(((LinRange(0, N-1, N-1)) .- ((N-1)/2)) / ((N-1)/2))
-hanning(N::Integer)::AbstractVector{<:Real} = 0.5 * (1 .- cos.(2π * LinRange(0, N-1, N-1) / (N-1)))
-hamming(N::Integer)::AbstractVector{<:Real} = missing
+triang(N::Integer)::AbstractVector{<:Real} = 1 .- abs.(((LinRange(0, N-1, N)) .- ((N-1)/2)) / ((N-1)/2))
+hanning(N::Integer)::AbstractVector{<:Real} = 0.5 * (1 .- cos.(2π * LinRange(0, N-1, N) / (N-1)))
+hamming(N::Integer)::AbstractVector{<:Real} = 0.54 .- 0.46 .*cos.(2π * LinRange(0, N-1, N) ./ (N-1))
 blackman(N::Integer)::AbstractVector{<:Real} = missing
 
 # Parametry sygnałów
@@ -88,11 +89,41 @@ function running_mean(x::AbstractVector, M::Integer)::Vector
 end
 
 function running_energy(x::AbstractVector, M::Integer)::Vector
-    missing
+    N = length(x)
+    wynik = zeros(Complex,N)
+
+    for n in 1:N
+        dolnagranica = max(1, n - M)
+        gornagranica = min(N, n + M)
+        suma = zero(Complex{Float64})
+        
+        for k in dolnagranica:gornagranica
+            suma += x[k]
+        end
+        
+        wynik[n] = suma^2 / (2*M + 1)
+    end
+
+    return wynik
 end
 
 function running_power(x::AbstractVector, M::Integer)::Vector
-    missing
+    N = length(x)
+    wynik = zeros(Complex,N)
+
+    for n in 1:N
+        dolnagranica = max(1, n - M)
+        gornagranica = min(N, n + M)
+        suma = zero(Complex{Float64})
+        
+        for k in dolnagranica:gornagranica
+            suma += x[k]
+        end
+        
+        wynik[n] = suma^2 / ((2*M + 1)*M)
+    end
+
+    return wynik
 end
 
 
