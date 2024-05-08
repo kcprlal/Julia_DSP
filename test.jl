@@ -1,17 +1,11 @@
-
-    function rozwiazanie(;
-        x::Vector{Float64} = [-3.08, -3.45, 1.37, 1.58, 1.05, -0.09, -1.88, -0.89, -1.0, -2.39, -2.02, -1.61, 4.25, -2.78, 2.04, -2.65, 0.77, 2.52, -2.16, 0.1, 4.31, 2.21, 1.7, -1.54, -0.09, 0.7, -4.83, 2.78, -3.11, -1.07, -2.16, -3.36, -3.65, -1.15, 2.79, -3.27, -4.83, 0.61, 0.48, 2.69, 4.67, 3.97, 4.11, -3.48, -4.6, -0.96, -4.99, 0.17, 3.61, 2.47, 2.19, -0.61, -4.48, -3.76],
-        h::Vector{Float64} = [-4.68, -2.24, -3.19, -0.86, -1.74, -4.38, 3.23, 4.34, 0.08, 0.0, -0.36, -4.19, -1.15, 0.36, 3.47, 1.43, -4.25, -2.02, 1.45, 2.88, 4.01, 3.56, 2.39, 0.28],
-    )
-    y = zeros(length(x)+length(h)-1)
-
-    for n in 1:length(y)
-        for k in max(1, n - length(h) + 1):min(n, length(x))
-            y[n] += x[k] * h[n - k + 1]
-        end
+function running_power(x::AbstractVector, M::Integer)::Vector
+    result::AbstractVector = zeros(length(x))
+    for k in 1:length(x)
+        n₁ = k - M < 1 ? 1 : k - M
+        n₂ = k + M > lastindex(x) ? lastindex(x) : k + M
+        result[k] = (1 / (n₂ - n₁ + 1)) * sum(abs2, x[n₁:n₂])
     end
-
-    return y
-    end
-
-    wynik=sum(rozwiazanie().^2)
+    return result
+end
+x=[1+4im,2,3+7im,4,5]
+a=running_power(x,3)

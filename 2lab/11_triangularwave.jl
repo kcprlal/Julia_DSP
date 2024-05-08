@@ -1,13 +1,13 @@
 using CairoMakie
 
-function cw_triang(t::AbstractVector; T=1.0)::Vector{Float64}
-    sygn = similar(t, Float64)  # Inicjalizacja wektora wynikowego
+function triangular_wave(t::AbstractVector)::Vector{Float64}
+    sygn = similar(t, Float64) 
     for (i, ti) in enumerate(t)
-        sygn[i] = abs(ti) <= T  ? (1.0-abs(ti)) : 0.0
+        sygn[i] = 2/π*asin(sin(π*ti))
     end
     return sygn
 end
 
-t = LinRange(-5, 5, 1000)
-sygn = cw_triang(t)
+t = LinRange(-1, 1, 1000)
+sygn = triangular_wave(t)
 lines(t, sygn)

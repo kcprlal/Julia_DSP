@@ -1,4 +1,4 @@
-function running_energy(x::AbstractVector, M::Int)::Vector
+function running_power(x::AbstractVector, M::Int)::Vector
     N = length(x)
     wynik = zeros(Complex,N)
 
@@ -11,10 +11,10 @@ function running_energy(x::AbstractVector, M::Int)::Vector
             suma += x[k]
         end
         
-        wynik[n] = suma^2 / (2*M + 1)
+        wynik[n] = suma^2 / ((2*M + 1)*M)
     end
 
     return wynik
 end
 x=[1+4im,2,3+7im,4,5]
-a=running_energy(x,3)
+a=running_power(x,3)

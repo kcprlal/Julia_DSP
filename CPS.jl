@@ -64,7 +64,7 @@ blackman(N::Integer)::AbstractVector{<:Real} = missing
 # Parametry sygnałów
 mean(x::AbstractVector)::Number = sqrt(sum(x.^2))
 peak2peak(x::AbstractVector)::Real = maximum(x)-minimum(x)
-energy(x::AbstractVector)::Real = sum(abs2.(x))
+energy(x::AbstractVector)::Real = sum(x.^2)
 power(x::AbstractVector)::Real = energy(x)/length(x)
 rms(x::AbstractVector)::Real = sqrt(power(x))
 
