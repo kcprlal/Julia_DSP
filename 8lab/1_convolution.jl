@@ -1,9 +1,9 @@
-function conv(x::Vector, h::Vector)::Vector
-    y = zeros(length(x)+length(h)-1)
-
-    for n in 1:length(y)
-        for k in max(1, n - length(h) + 1):min(n, length(x))
-            y[n] += x[k] * h[n - k + 1]
+function conv(f::Vector, g::Vector)::Vector
+    y = zeros(length(f)+length(g)-1)
+    ylen=length(y)
+    for n in 1:ylen
+        for k in max(1, n - length(g) + 1):min(n, length(f))
+            y[n] += f[k] * g[n - k + 1]
         end
     end
 

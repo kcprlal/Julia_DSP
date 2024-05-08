@@ -45,10 +45,6 @@ function rand_siganl_bl(f1::Real, f2::Real)::Function
     missing
 end
 
-function rand_siganl_bl(f1::Real, f2::Real)::Function
-    missing
-end
-
 
 
 # Sygnały dyskretne
@@ -180,4 +176,67 @@ end
 function ifft(X::AbstractVector)::Vector
     idft(X) # Może da rade lepiej?
 end
+
+fftfreq(N::Integer, fs::Real)::Vector = missing
+rfftfreq(N::Integer, fs::Real)::Vector = missing
+amplitude_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = missing
+power_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = missing
+psd(x::AbstractVector, w::AbstractVector=rect(length(x)), fs::Real=1.0)::Vector = missing
+
+function periodogram(x::AbstractVector, w::AbstractVector=rect(length(x)), fs::Real=1.0)::Vector
+    missing
+end
+
+
+
+function stft(x::AbstractVector, w::AbstractVector, L::Integer)::Matrix
+    missing
+end
+
+
+function istft(X::AbstractMatrix{<:Complex}, w::AbstractVector{<:Real}, L::Integer)::AbstractVector{<:Real}
+    missing
+end
+
+function conv(f::Vector, g::Vector)::Vector
+    y = zeros(length(f)+length(g)-1)
+    ylen=length(y)
+    for n in 1:ylen
+        for k in max(1, n - length(g) + 1):min(n, length(f))
+            y[n] += f[k] * g[n - k + 1]
+        end
+    end
+
+    return y
+end
+
+function fast_conv(f::Vector, g::Vector)::Vector
+    missing
+end
+
+function overlap_add(x::Vector, h::Vector, L::Integer)::Vector
+    missing
+end
+
+function overlap_save(x::Vector, h::Vector, L::Integer)::Vector
+    missing
+end
+
+function lti_filter(b::Vector, a::Vector, x::Vector)::Vector
+    missing
+end
+
+function filtfilt(b::Vector, a::Vector, x::Vector)::Vector
+    missing
+end
+
+function lti_amp(f::Real, b::Vector, a::Vector)::Real
+    missing
+end
+
+function lti_phase(f::Real, b::Vector, a::Vector)::Real
+    missing
+end
+
+
 end
