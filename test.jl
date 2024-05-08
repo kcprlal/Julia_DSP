@@ -1,11 +1,17 @@
-function running_power(x::AbstractVector, M::Integer)::Vector
-    result::AbstractVector = zeros(length(x))
-    for k in 1:length(x)
-        n₁ = k - M < 1 ? 1 : k - M
-        n₂ = k + M > lastindex(x) ? lastindex(x) : k + M
-        result[k] = (1 / (n₂ - n₁ + 1)) * sum(abs2, x[n₁:n₂])
-    end
-    return result
+using OffsetArrays
+function dft(x::AbstractVector)::Vector
+    N = length(x)
+    ζ = OffsetArray(
+        [cispi(-2 * n / N) for n in 0:(N-1)],
+        0:(N-1)
+    )
+    [
+        sum((
+            x[n+1] * ζ[(n*f)%N]
+            for n in 0:(N-1)
+        ))
+        for f in 0:(N-1)
+    ]
 end
-x=[1+4im,2,3+7im,4,5]
-a=running_power(x,3)
+x = [26,40,7,30,39,38,13,42,15,36,32]
+y = dft(x)

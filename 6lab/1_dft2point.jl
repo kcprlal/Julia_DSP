@@ -5,9 +5,9 @@ function dft2point(x::AbstractVector)::AbstractVector
     for i in 1:2
         A=0
         for j in 1:2
-            A+=x[j]*exp(-im*(2π/2)*i*j)
+            A+=x[j]*exp(-im*(2π/2)*i*(j-1))
         end
-        wynik[i]=A
+        wynik[i]=round(A;digits=10)
     end
     return wynik
 end
