@@ -196,7 +196,26 @@ function rdft(x::AbstractVector)::Vector
 end
 
 function irdft(X::AbstractVector, N::Integer)::Vector
-   missing
+    result=zeros(N)
+    
+    if N%2==0
+        for i in length(x)-2:-1:1
+            push!(X,conj(X[i+1]))
+        end
+    else
+        for i in length(x)-1:-1:1
+            push!(X,conj(X[i+1]))
+        end
+    end
+    
+    for k in 0:N-1
+        A=0
+        for n in 0:N-1
+            A+=X[n+1]*(1/N)*exp(im*(2π/N)*k*n)
+        end
+        result[k+1]=round(A;digits=10)
+    end
+    return result
 end
 
 function fft_radix2_dit_r(x::AbstractVector)::Vector

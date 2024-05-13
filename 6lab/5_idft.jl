@@ -1,6 +1,6 @@
 function idft(X::AbstractVector)::Vector
     N=length(X)
-    result = zeros(Complex,N)
+    result = zeros(N)
     for k in 0:N-1
         A=0
         for n in 0:N-1
