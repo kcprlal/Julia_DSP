@@ -7,7 +7,7 @@ function dtft(f::Real, signal::AbstractVector, fs::Real)
     for n in eachindex(signal)
         result += signal[n] * exp(-1im*ω*n)
     end
-    return result
+    return round(result,digits=10)
  end
  x = [26,40,7,30,39,38,13,42,15,36,32]
  f::Real=25

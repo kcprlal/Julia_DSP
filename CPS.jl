@@ -150,7 +150,7 @@ function dtft(f::Real; signal::AbstractVector, fs::Real)
     for n in eachindex(signal)
         result += signal[n] * exp(-1im*ω*n)
     end
-    return result
+    return round(result,digits=10)
 end
 
 function dft(x::AbstractVector)::Vector
