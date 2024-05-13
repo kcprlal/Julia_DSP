@@ -1,0 +1,1 @@
+SQNR(N::Integer)::Real = 6.02*N+1.76 #w dB

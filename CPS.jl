@@ -135,18 +135,35 @@ missing
 end
 
 # Kwantyzacja
-quantize(x::Real; L::AbstractVector)::Real = missing
-SQNR(N::Integer)::Real = missing
-SNR(Psignal, Pnoise)::Real = missing
+quantize(x::Real; L::AbstractVector)::Function = fun-> argmin(abs(x.-L))
+SQNR(N::Integer)::Real = 6.02*N+1.76 #w dB
+SNR(Psignal, Pnoise)::Real = 10*log10(Psignal/Pnoise)
 
 
 # Obliczanie DFT
+#nie dziala jak jest srednik
 function dtft(f::Real; signal::AbstractVector, fs::Real)
-   missing
+    result::ComplexF64 = 0.0
+    xlen=length(signal)
+    ω=2π*(f/fs)
+
+    for n in eachindex(signal)
+        result += signal[n] * exp(-1im*ω*n)
+    end
+    return result
 end
 
 function dft(x::AbstractVector)::Vector
-    missing
+    xlen=length(x)
+    wynik = zeros(Complex,xlen)
+    for k in 1:xlen
+        A=0
+        for n in 1:xlen
+            A+=x[n]*exp(-2im*(π/xlen)*k*(n-1))
+        end
+        wynik[xlen+1-k]=round(A;digits=10)
+    end
+    return wynik
 end
 
 function idft(X::AbstractVector)::Vector
