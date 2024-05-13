@@ -167,11 +167,32 @@ function dft(x::AbstractVector)::Vector
 end
 
 function idft(X::AbstractVector)::Vector
-   missing
+    N=length(X)
+    result = zeros(Complex,N)
+    for k in 0:N-1
+        A=0
+        for n in 0:N-1
+            A+=X[n+1]*(1/N)*exp(im*(2π/N)*k*n)
+        end
+        result[k+1]=round(A;digits=10)
+    end
+    return result
 end
 
 function rdft(x::AbstractVector)::Vector
-   missing
+    N=length(x)
+    index::Int=0
+    N%2!=0 ? index=((N-1)/2)+1 : index=((N-1)/2)+1+0.5
+    
+    result = zeros(Complex,index)
+    for k in 0:index-1
+        A=0
+        for n in 0:N-1
+            A+=x[n+1]*exp(-im*(2π/N)*k*n)
+        end
+        result[k+1]=round(A;digits=10)
+    end
+    return result
 end
 
 function irdft(X::AbstractVector, N::Integer)::Vector

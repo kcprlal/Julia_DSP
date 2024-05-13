@@ -13,5 +13,5 @@ function dft(x::AbstractVector)::AbstractVector
     return result
 end
 
-x = [26,40,7,30,39]
+x = [1,2,3,4,5,6,7]
 y = dft(x)
