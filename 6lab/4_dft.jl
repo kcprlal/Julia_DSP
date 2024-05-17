@@ -6,12 +6,12 @@ function dft(x::AbstractVector)::AbstractVector
     for k in 0:N-1
         A=0
         for n in 0:N-1
-            A+=x[n+1]*exp(-im*(2π/N)*k*n)
+            A+=x[n+1]*(1/N)*exp(-im*(2π/N)*k*n)
         end
         result[k+1]=round(A;digits=10)
     end
     return result
 end
 
-x = [1,2,3,4,5,6,7]
+x = [100,123,43,43,45]
 y = dft(x)

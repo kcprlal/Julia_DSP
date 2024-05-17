@@ -8,7 +8,7 @@ function rdft(x::AbstractVector)::Vector
     for k in 0:index-1
         A=0
         for n in 0:N-1
-            A+=x[n+1]*exp(-im*(2π/N)*k*n)
+            A+=x[n+1]*(1/N)*exp(-im*(2π/N)*k*n)
         end
         result[k+1]=round(A;digits=10)
     end

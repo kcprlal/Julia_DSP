@@ -3,17 +3,17 @@ module CPS
 using LinearAlgebra
 
 # Sygnały ciągłe
-cw_rectangular(t::Real; T=1.0)::Real = abs(t)<=T/2 ? 1.0 : 0.0
-cw_triangle(t::Real; T=1.0)::Real = abs(t) <= T  ? (1.0-abs(t)) : 0.0
-cw_literka_M(t::Real; T=1.0)::Real = abs(t) <= T  ? abs(t) : 0.0
-cw_literka_U(t::Real; T=1.0)::Real = abs(t) <= T  ? t^2 : 0.0
+cw_rectangular(t::Real; T=1.0)::Real = abs(t) <= T / 2 ? 1.0 : 0.0
+cw_triangle(t::Real; T=1.0)::Real = abs(t) <= T ? (1.0 - abs(t)) : 0.0
+cw_literka_M(t::Real; T=1.0)::Real = abs(t) <= T ? abs(t) : 0.0
+cw_literka_U(t::Real; T=1.0)::Real = abs(t) <= T ? t^2 : 0.0
 
 #zapytac sie o te 2 nizej!!!!!!!!!!!!!!
-ramp_wave(t::Real)::Real = t-floor(t)
-sawtooth_wave(t::Real)::Real = -t+floor(t)
-triangular_wave(t::Real)::Real = 2/π*asin(sin(2*π*t))
-square_wave(t::Real)::Real =  sign(sin(pi*(t+0.5)))
-pulse_wave(t::Real, ρ::Real=0.2)::Real = (0 <= mod(t,1) <= ρ) ? 1.0 : 0.0
+ramp_wave(t::Real)::Real = t - floor(t)
+sawtooth_wave(t::Real)::Real = -t + floor(t)
+triangular_wave(t::Real)::Real = 2 / π * asin(sin(2 * π * t))
+square_wave(t::Real)::Real = sign(sin(pi * (t + 0.5)))
+pulse_wave(t::Real, ρ::Real=0.2)::Real = (0 <= mod(t, 1) <= ρ) ? 1.0 : 0.0
 impuse_repeater(g::Function, t1::Real, t2::Real)::Function = fun -> g(mod(fun - t1, t2 - t1) + t1)
 
 function ramp_wave_bl(t; A=1.0, T=1.0, band=20.0)
@@ -48,37 +48,37 @@ end
 
 
 # Sygnały dyskretne
-kronecker(n::Integer)::Real = n==0 ? (return 1) : (return 0)
-heaviside(n::Integer)::Real = n>=0 ? (return 1) : (return 0)
+kronecker(n::Integer)::Real = n == 0 ? (return 1) : (return 0)
+heaviside(n::Integer)::Real = n >= 0 ? (return 1) : (return 0)
 
 # Okna
 rect(N::Integer)::AbstractVector{<:Real} = return ones(N)
-triang(N::Integer)::AbstractVector{<:Real} = 1 .- abs.(((LinRange(0, N-1, N)) .- ((N-1)/2)) / ((N-1)/2))
-hanning(N::Integer)::AbstractVector{<:Real} = 0.5 * (1 .- cos.(2π * LinRange(0, N-1, N) / (N-1)))
-hamming(N::Integer)::AbstractVector{<:Real} = 0.54 .- 0.46 .*cos.(2π * LinRange(0, N-1, N) ./ (N-1))
-blackman(N::Integer)::AbstractVector{<:Real} = 0.42 .- 0.5 .*cos.(2π*LinRange(0,N-1,N)/(N-1)).+0.08 .*cos.(4π*LinRange(0,N-1,N)/(N-1))
+triang(N::Integer)::AbstractVector{<:Real} = 1 .- abs.(((LinRange(0, N - 1, N)) .- ((N - 1) / 2)) / ((N - 1) / 2))
+hanning(N::Integer)::AbstractVector{<:Real} = 0.5 * (1 .- cos.(2π * LinRange(0, N - 1, N) / (N - 1)))
+hamming(N::Integer)::AbstractVector{<:Real} = 0.54 .- 0.46 .* cos.(2π * LinRange(0, N - 1, N) ./ (N - 1))
+blackman(N::Integer)::AbstractVector{<:Real} = 0.42 .- 0.5 .* cos.(2π * LinRange(0, N - 1, N) / (N - 1)) .+ 0.08 .* cos.(4π * LinRange(0, N - 1, N) / (N - 1))
 
 # Parametry sygnałów
-mean(x::AbstractVector)::Number = sqrt(sum(x.^2))
-peak2peak(x::AbstractVector)::Real = maximum(x)-minimum(x)
-energy(x::AbstractVector)::Real = sum(x.^2)
-power(x::AbstractVector)::Real = energy(x)/length(x)
+mean(x::AbstractVector)::Number = sqrt(sum(x .^ 2))
+peak2peak(x::AbstractVector)::Real = maximum(x) - minimum(x)
+energy(x::AbstractVector)::Real = sum(x .^ 2)
+power(x::AbstractVector)::Real = energy(x) / length(x)
 rms(x::AbstractVector)::Real = sqrt(power(x))
 
 function running_mean(x::AbstractVector, M::Integer)::Vector
     N = length(x)
-    wynik = zeros(Complex,N)
+    wynik = zeros(Complex, N)
 
     for n in 1:N
         dolnagranica = max(1, n - M)
         gornagranica = min(N, n + M)
         suma = zero(Complex{Float64})
-        
+
         for k in dolnagranica:gornagranica
             suma += x[k]
         end
-        
-        wynik[n] = suma / (2*M + 1)
+
+        wynik[n] = suma / (2 * M + 1)
     end
 
     return wynik
@@ -86,18 +86,18 @@ end
 
 function running_energy(x::AbstractVector, M::Integer)::Vector
     N = length(x)
-    wynik = zeros(Complex,N)
+    wynik = zeros(Complex, N)
 
     for n in 1:N
         dolnagranica = max(1, n - M)
         gornagranica = min(N, n + M)
         suma = zero(Complex{Float64})
-        
+
         for k in dolnagranica:gornagranica
             suma += x[k]
         end
-        
-        wynik[n] = suma^2 / (2*M + 1)
+
+        wynik[n] = suma^2 / (2 * M + 1)
     end
 
     return wynik
@@ -105,18 +105,18 @@ end
 
 function running_power(x::AbstractVector, M::Integer)::Vector
     N = length(x)
-    wynik = zeros(Complex,N)
+    wynik = zeros(Complex, N)
 
     for n in 1:N
         dolnagranica = max(1, n - M)
         gornagranica = min(N, n + M)
         suma = zero(Complex{Float64})
-        
+
         for k in dolnagranica:gornagranica
             suma += x[k]
         end
-        
-        wynik[n] = suma^2 / ((2*M + 1)*M)
+
+        wynik[n] = suma^2 / ((2 * M + 1) * M)
     end
 
     return wynik
@@ -131,99 +131,148 @@ function interpolate(
     s::AbstractVector,
     kernel::Function=sinc
 )::Real
-missing
+    return newf -> begin
+        result = 0.0
+        Δt = m[2] - m[1]
+        for n in eachindex(m)
+            result += s[n] * kernel((newf - m[n]) / Δt)
+        end
+        return result
+    end
 end
 
 # Kwantyzacja
-quantize(x::Real; L::AbstractVector)::Function = fun-> argmin(abs(x.-L))
-SQNR(N::Integer)::Real = 6.02*N+1.76 #w dB
-SNR(Psignal, Pnoise)::Real = 10*log10(Psignal/Pnoise)
+quantize(x::Real; L::AbstractVector)::Function = fun -> argmin(abs(x .- L))
+SQNR(N::Integer)::Real = 6.02 * N + 1.76 #w dB
+SNR(Psignal, Pnoise)::Real = 10 * log10(Psignal / Pnoise)
 
 
 # Obliczanie DFT
 #nie dziala jak jest srednik
 function dtft(f::Real; signal::AbstractVector, fs::Real)
     result::ComplexF64 = 0.0
-    xlen=length(signal)
-    ω=2π*(f/fs)
+    xlen = length(signal)
+    ω = 2π * (f / fs)
 
     for n in eachindex(signal)
-        result += signal[n] * exp(-1im*ω*n)
+        result += signal[n] * exp(-1im * ω * n)
     end
-    return round(result,digits=10)
+    return round(result, digits=10)
 end
 
 function dft(x::AbstractVector)::Vector
-    xlen=length(x)
-    wynik = zeros(Complex,xlen)
+    xlen = length(x)
+    wynik = zeros(Complex, xlen)
     for k in 1:xlen
-        A=0
+        A = 0
         for n in 1:xlen
-            A+=x[n]*exp(-2im*(π/xlen)*k*(n-1))
+            A += x[n] * exp(-2im * (π / xlen) * k * (n - 1))
         end
-        wynik[xlen+1-k]=round(A;digits=10)
+        wynik[xlen+1-k] = round(A; digits=10)
     end
     return wynik
 end
 
 function idft(X::AbstractVector)::Vector
-    N=length(X)
-    result = zeros(Complex,N)
+    N = length(X)
+    result = zeros(Complex, N)
     for k in 0:N-1
-        A=0
+        A = 0
         for n in 0:N-1
-            A+=X[n+1]*(1/N)*exp(im*(2π/N)*k*n)
+            A += X[n+1] * (1 / N) * exp(im * (2π / N) * k * n)
         end
-        result[k+1]=round(A;digits=10)
+        result[k+1] = round(A; digits=10)
     end
     return result
 end
 
 function rdft(x::AbstractVector)::Vector
-    N=length(x)
-    index::Int=0
-    N%2!=0 ? index=((N-1)/2)+1 : index=((N-1)/2)+1+0.5
-    
-    result = zeros(Complex,index)
+    N = length(x)
+    index::Int = 0
+    N % 2 != 0 ? index = ((N - 1) / 2) + 1 : index = ((N - 1) / 2) + 1 + 0.5
+
+    result = zeros(Complex, index)
     for k in 0:index-1
-        A=0
+        A = 0
         for n in 0:N-1
-            A+=x[n+1]*exp(-im*(2π/N)*k*n)
+            A += x[n+1] * exp(-im * (2π / N) * k * n)
         end
-        result[k+1]=round(A;digits=10)
+        result[k+1] = round(A; digits=10)
     end
     return result
 end
 
 function irdft(X::AbstractVector, N::Integer)::Vector
-    result=zeros(N)
-    
-    if N%2==0
+    result = zeros(N)
+
+    if N % 2 == 0
         for i in length(x)-2:-1:1
-            push!(X,conj(X[i+1]))
+            push!(X, conj(X[i+1]))
         end
     else
         for i in length(x)-1:-1:1
-            push!(X,conj(X[i+1]))
+            push!(X, conj(X[i+1]))
         end
     end
-    
+
     for k in 0:N-1
-        A=0
+        A = 0
         for n in 0:N-1
-            A+=X[n+1]*(1/N)*exp(im*(2π/N)*k*n)
+            A += X[n+1] * exp(im * (2π / N) * k * n)
         end
-        result[k+1]=round(A;digits=10)
+        result[k+1] = round(A; digits=10)
     end
     return result
 end
 
 function fft_radix2_dit_r(x::AbstractVector)::Vector
-   missing
+    N = length(x)
+
+    if N <= 1
+        return x
+    end
+
+    if N % 2 != 0
+        throw(ArgumentError("x != 2^n"))
+    end
+
+    even = fft_radix2_dit_r(x[1:2:end])
+    odd = fft_radix2_dit_r(x[2:2:end])
+
+    result = similar(x)
+    halfN = div(N, 2)
+    for k in 1:halfN
+        t = exp(-2im * π * (k - 1) / N) * odd[k]
+        result[k] = even[k] + t
+        result[k+halfN] = even[k] - t
+    end
+
+    return result
 end
 
 function ifft_radix2_dif_r(X::AbstractVector)::Vector
-   missing
+    N = length(X)
+
+    if N <= 1
+        return X
+    end
+
+    if N % 2 != 0
+        throw(ArgumentError("X!=2^n"))
+    end
+
+    even = ifft_radix2_dif_r(X[1:2:end])
+    odd = ifft_radix2_dif_r(X[2:2:end])
+
+    result = zeros(ComplexF64, N)
+    halfN = div(N, 2)
+    for k in 1:halfN
+        t = exp(2im * π * (k - 1) / N) * odd[k]
+        result[k] = even[k] + t
+        result[k+halfN] = even[k] - t
+    end
+
+    return result
 end
 
 function fft(x::AbstractVector)::Vector
@@ -256,11 +305,11 @@ function istft(X::AbstractMatrix{<:Complex}, w::AbstractVector{<:Real}, L::Integ
 end
 
 function conv(f::Vector, g::Vector)::Vector
-    y = zeros(length(f)+length(g)-1)
-    ylen=length(y)
+    y = zeros(length(f) + length(g) - 1)
+    ylen = length(y)
     for n in 1:ylen
         for k in max(1, n - length(g) + 1):min(n, length(f))
-            y[n] += f[k] * g[n - k + 1]
+            y[n] += f[k] * g[n-k+1]
         end
     end
 
@@ -295,5 +344,28 @@ function lti_phase(f::Real, b::Vector, a::Vector)::Real
     missing
 end
 
+function firwin_lp_I(order, F0)
+    missing
+end
+
+function firwin_hp_I(order, F0)
+    missing
+end
+
+function firwin_bp_I(order, F1, F2)
+    missing
+end
+
+function firwin_bs_I(order, F1, F2)
+    missing
+end
+
+function firwin_lp_II(N, F0)
+    missing
+end
+
+function firwin_bp_II(N, F1, F2)
+    missing
+end
 
 end
