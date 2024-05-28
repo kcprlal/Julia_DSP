@@ -13,5 +13,5 @@ function dft(x::AbstractVector)::AbstractVector
     return result
 end
 
-x = [100,123,43,43,45]
-y = dft(x)
+x = [121, 23, 43, 21, 43,2]
+@btime(dft(x))

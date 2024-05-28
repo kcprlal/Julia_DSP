@@ -8,9 +8,9 @@ cw_triangle(t::Real; T=1.0)::Real = abs(t) <= T ? (1.0 - abs(t)) : 0.0
 cw_literka_M(t::Real; T=1.0)::Real = abs(t) <= T ? abs(t) : 0.0
 cw_literka_U(t::Real; T=1.0)::Real = abs(t) <= T ? t^2 : 0.0
 
-#zapytac sie o te 2 nizej!!!!!!!!!!!!!!
-ramp_wave(t::Real)::Real = t - floor(t)
-sawtooth_wave(t::Real)::Real = -t + floor(t)
+
+ramp_wave(t::Real)::Real = 2*rem(t,1,RoundNearest)
+sawtooth_wave(t::Real)::Real = -2*rem(t,1,RoundNearest)
 triangular_wave(t::Real)::Real = 2 / π * asin(sin(2 * π * t))
 square_wave(t::Real)::Real = sign(sin(pi * (t + 0.5)))
 pulse_wave(t::Real, ρ::Real=0.2)::Real = (0 <= mod(t, 1) <= ρ) ? 1.0 : 0.0
@@ -142,7 +142,7 @@ function interpolate(
 end
 
 # Kwantyzacja
-quantize(x::Real; L::AbstractVector)::Function = fun -> argmin(abs(x .- L))
+quantize(x::Real; L::AbstractVector)::Function = fun -> L[argmin(abs(x .- L))]
 SQNR(N::Integer)::Real = 6.02 * N + 1.76 #w dB
 SNR(Psignal, Pnoise)::Real = 10 * log10(Psignal / Pnoise)
 

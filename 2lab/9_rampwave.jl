@@ -4,7 +4,7 @@ using CairoMakie
 function ramp_wave(t::AbstractVector)::Vector{Float64}
     sygn = similar(t, Float64)  # Inicjalizacja wektora wynikowego
     for (i, ti) in enumerate(t)
-        sygn[i] = ti-floor(ti)
+        sygn[i] = 2*rem(ti,1,RoundNearest)
     end
     return sygn
 end
