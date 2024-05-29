@@ -53,10 +53,10 @@ heaviside(n::Integer)::Real = n >= 0 ? (return 1) : (return 0)
 
 # Okna
 rect(N::Integer)::AbstractVector{<:Real} = return ones(N)
-triang(N::Integer)::AbstractVector{<:Real} = 1 .- abs.((LinRange(-N, N, 2*N+1)))/(N+1)
-hanning(N::Integer)::AbstractVector{<:Real} = 0.5 * (1 .+ cos.(2π * LinRange(-N, N, 2*N+1) / (2*N+1)))
-hamming(N::Integer)::AbstractVector{<:Real} = 0.54 .+ 0.46 .*cos.(2π * LinRange(-N, N, 2*N+1) ./ (2*N+1))
-blackman(N::Integer)::AbstractVector{<:Real} = 0.42 .+ 0.5 .*cos.(2π*LinRange(-N, N, 2*N+1)/(2*N+1)).+0.08 .*cos.(4π*LinRange(-N, N, 2*N+1)/(2*N+1))
+triang(N::Integer)::AbstractVector{<:Real} = 1 .- abs.((LinRange(0,N,N)))/(N+1)
+hanning(N::Integer)::AbstractVector{<:Real} = 0.5 * (1 .+ cos.(2π * LinRange(0,N,N) / (2*N+1)))
+hamming(N::Integer)::AbstractVector{<:Real} = 0.54 .+ 0.46 .*cos.(2π * LinRange(0,N,N) ./ (2*N+1))
+blackman(N::Integer)::AbstractVector{<:Real} = 0.42 .+ 0.5 .*cos.(2π*LinRange(0,N,N)/(2*N+1)).+0.08 .*cos.(4π*LinRange(-N, N, 2*N+1)/(2*N+1))
 
 # Parametry sygnałów
 mean(x::AbstractVector)::Number = sqrt(sum(x .^ 2))
@@ -283,8 +283,8 @@ function ifft(X::AbstractVector)::Vector
     idft(X) # Może da rade lepiej?
 end
 
-fftfreq(N::Integer, fs::Real)::Vector = missing
-rfftfreq(N::Integer, fs::Real)::Vector = missing
+fftfreq(N::Integer, fs::Real)::Vector = [(n < N/2 ? n*(fs/N) : (n-N)*(fs/N)) for n in 0:(N-1)]
+rfftfreq(N::Integer, fs::Real)::Vector = [n * (fs / N) for n in 0:(N-1)/2]
 amplitude_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = missing
 power_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = missing
 psd(x::AbstractVector, w::AbstractVector=rect(length(x)), fs::Real=1.0)::Vector = missing
