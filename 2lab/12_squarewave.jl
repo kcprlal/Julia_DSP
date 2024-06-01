@@ -3,7 +3,7 @@ using CairoMakie
 function square_wave(t::AbstractVector)::Vector{Float64}
     sygn = similar(t, Float64)  
     for (i, ti) in enumerate(t)
-        sygn[i] = sign(sin(pi*(ti+0.5)))
+        sygn[i] = ifelse(mod(ti, 1) < 0.5, 1, -1)
     end
     return sygn
 end

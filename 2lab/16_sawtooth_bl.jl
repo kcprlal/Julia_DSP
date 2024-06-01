@@ -4,7 +4,7 @@ function ramp_wave_bl(t; A=1.0, T=1.0, band=20.0)
     n = floor(Int, B * T / 2)
 
     for k in 1:n
-        signal += -2*A/π^2 * (-1)^k/k * sin(ω*k*t)
+        signal += 2*A/π^2 * (-1)^k/k * sin(ω*k*t)
     end
 
     return signal

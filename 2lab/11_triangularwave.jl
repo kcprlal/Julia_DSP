@@ -3,7 +3,7 @@ using CairoMakie
 function triangular_wave(t::AbstractVector)::Vector{Float64}
     sygn = similar(t, Float64) 
     for (i, ti) in enumerate(t)
-        sygn[i] = 2/π*asin(sin(π*ti))
+        sygn[i] = ifelse(mod(ti + 1 / 4, 1.0) < 1 / 2, 4 * mod(ti + 1 / 4, 1.0) - 1, -4 * mod(ti + 1 / 4, 1.0) + 3)
     end
     return sygn
 end

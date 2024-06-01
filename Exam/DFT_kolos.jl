@@ -8,7 +8,7 @@ function rozwiazanie(;
 )
     N = length(x)
     
-    F=[(k < N÷2 ? k*(fp/N) : (k-N)*(fp/N)) for k in 0:(N-1)]
+    F=[(k < N/2 ? k*(fp/N) : (k-N)*(fp/N)) for k in 0:(N-1)]
 
     xdft = zeros(ComplexF64, length(x))
     for k in 0:N-1

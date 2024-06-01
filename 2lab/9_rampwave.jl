@@ -9,6 +9,6 @@ function ramp_wave(t::AbstractVector)::Vector{Float64}
     return sygn
 end
 
-t = LinRange(-2, 2, 1000)
+t = LinRange(0, 1, 1000)
 sygn = ramp_wave(t)
 lines(t, sygn)

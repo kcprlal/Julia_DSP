@@ -11,25 +11,55 @@ cw_literka_U(t::Real; T=1.0)::Real = abs(t) <= T ? t^2 : 0.0
 
 ramp_wave(t::Real)::Real = 2*rem(t,1,RoundNearest)
 sawtooth_wave(t::Real)::Real = -2*rem(t,1,RoundNearest)
-triangular_wave(t::Real)::Real = 2 / π * asin(sin(2 * π * t))
-square_wave(t::Real)::Real = sign(sin(pi * (t + 0.5)))
+triangular_wave(t::Real)::Real = ifelse(mod(t + 1 / 4, 1.0) < 1 / 2, 4 * mod(t + 1 / 4, 1.0) - 1, -4 * mod(t + 1 / 4, 1.0) + 3)
+square_wave(t::Real)::Real = ifelse(mod(t, 1) < 0.5, 1, -1)
 pulse_wave(t::Real, ρ::Real=0.2)::Real = (0 <= mod(t, 1) <= ρ) ? 1.0 : 0.0
 impuse_repeater(g::Function, t1::Real, t2::Real)::Function = fun -> g(mod(fun - t1, t2 - t1) + t1)
 
 function ramp_wave_bl(t; A=1.0, T=1.0, band=20.0)
-    missing
+    signal = 0.0
+    ω = 2π / T
+    n = floor(Int, B * T / 2)
+
+    for k in 1:n
+        signal += -2*A/π^2 * (-1)^k/k * sin(ω*k*t)
+    end
+
+    return signal
 end
 
 function sawtooth_wave_bl(t; A=1.0, T=1.0, band=20.0)
-    missing
+    signal = 0.0
+    ω = 2π / T
+    n = floor(Int, band * T / 2)
+
+    for k in 1:n
+        signal += 2*A/π^2 * (-1)^k/k * sin(ω*k*t)
+    end
+
+    return signal
 end
 
 function triangular_wave_bl(t; A=1.0, T=1.0, band=20.0)
-    missing
+    signal = 0.0
+    n = floor(Int, band * T / 2)
+    ω=2*π/T
+    for k in 1:n
+        signal += -8*A/π^2 * (-1)^k/(2*k-1)^2 * sin(ω*(2*k-1)*t)
+    end
+
+    return signal
 end
 
 function square_wave_bl(t; A=1.0, T=1.0, band=20.0)
-    missing
+    signal = 0.0
+    n = floor(Int, band * T / 2)
+    ω=2*π/T
+    for k in 0:n
+        signal += 4*A/π * 1/(2*k-1) * sin(ω*(2*k-1)*t)
+    end
+
+    return signal
 end
 
 function pulse_wave_bl(t; ρ=0.2, A=1.0, T=1.0, band=20.0)

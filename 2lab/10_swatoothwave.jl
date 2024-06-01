@@ -8,5 +8,5 @@ function sawtooth_wave(t::AbstractVector; T=1.0)::Vector{Float64}
     return sygn
 end
 
-t=LinRange(-1,1,1000)
+t=LinRange(-2,2,1000)
 lines(t,sawtooth_wave(t))
