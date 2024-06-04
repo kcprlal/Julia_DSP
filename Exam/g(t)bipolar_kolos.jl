@@ -1,23 +1,11 @@
 function rozwiazanie(;
-    fp::Float64 = 229.87,
-    t1::Float64 = 9.93,
-    N::Int = 516,
+    fp::Float64 = 210.32,
+    t1::Float64 = -9.92,
+    N::Int = 645,
 )
-    # Funkcja generująca sygnał prostokątny
-    g(t) = ifelse(mod(t, 1) < 0.5, 1, -1)
-    
-    # Generowanie wartości czasu
-    t = LinRange(t1, t1 + (N-1)/fp, N)
-    
-    # Generowanie sygnału
-    y = 3.9 .* g.(3.3 .* t .- 0.7)
-    
-    # Obliczanie wartości RMS
-    power = sum(y.^2) / length(y)
-    
-    return power
+    g(t)=sign.(sin.(2pi*t))
+    t=LinRange(t1,t1+(N-1)/fp,N)
+    y=g(0.1*t.-1.9)
+    return sum(y)/length(y)
 end
-
-# Wywołanie funkcji
-result = rozwiazanie()
-println("RMS: ", result)
+rozwiazanie()

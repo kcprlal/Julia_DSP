@@ -8,6 +8,6 @@ function pulse_wave(t::AbstractVector, ρ::Real=0.4)::Vector{Float64}
     return sygn
 end
 
-t = LinRange(0, 1, 1000)
+t = LinRange(0, 4, 1000)
 sygn = pulse_wave(t)
 lines(t, sygn)

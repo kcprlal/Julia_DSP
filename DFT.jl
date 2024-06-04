@@ -4,7 +4,7 @@ function fft_custom(x::Vector{ComplexF64})::Vector{ComplexF64}
     index::Int = 0
     N % 2 != 0 ? index = ((N - 1) / 2) + 1 : index = ((N - 1) / 2) + 1 + 0.5
     result = zeros(Complex{Float64}, N)
-    twifac::AbstractVector = exp.(-2im * π * (0:N-1)/N) #mozna obliczyc w czasie kompilacji
+    twifac::AbstractVector = @.exp.(-2im * π * (0:N-1)/N) #mozna obliczyc w czasie kompilacji
  
     for k in 0:index-1
         A = 0.0 + 0.0im

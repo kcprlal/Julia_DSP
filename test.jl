@@ -1,24 +1,13 @@
-using CairoMakie
-#include("CPS.jl")
-using FFTW
-rect(N::Integer)::AbstractVector{<:Real} = return ones(N)
-# Funkcja do obliczania widma amplitudowego
-function amplitude(x::Vector{Complex}, w::Vector{Float64})::Vector{Float64}
-    N = length(x)
-    # Nałożenie okna na sygnał
-    windowed_signal = x .* w
-    # Obliczenie DFT sygnału
-    X = fft(windowed_signal)
-    # Obliczenie widma amplitudowego
-    A = abs.(X) / N
-    return A
+function rozwiazanie(;
+    fp::Float64=360.44,
+    t1::Float64=-2.7,
+    N::Int=58,
+)
+    g = t -> sign(sin(2pi*t))
+    t = t = range(; start=t1, step=(1 / fp), length=N)
+    y = 1.5 * g.(2.8 .* t .- 4.1)
+    energy = sum(abs2, y)
+    return energy
+    130.5
 end
-
-# Przykładowe użycie
-x = Complex{Float64}[1, 2, 3, 4, 5, 6, 7, 8]
-w = rect(length(x))  # Okno Hamminga
-
-A = amplitude(x, w)
-
-# Wyświetlenie wyników
-println("Widmo amplitudowe: ", A)
+rozwiazanie()

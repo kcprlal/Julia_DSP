@@ -21,8 +21,8 @@ function rozwiazanie(;
 
     for i in 1:N
         if F[i] in f
-            #result += abs(xdft[i])
-            result += angle(xdft[i]) 
+            result += abs(xdft[i])
+            #result += angle(xdft[i]) 
         end
     end
 

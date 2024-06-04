@@ -1,13 +1,9 @@
 function rozwiazanie(;
-    fp::Float64 = 448.57,
-    t1::Float64 = -9.93,
-    N::Int = 239,
+    fp::Float64=232.6,
+    t1::Float64=8.26,
+    N::Int=129,
 )
-    g(t) = 2/π*asin.(sin.(π*t))
-    
-    t=LinRange(t1,t1+(N-1)/fp,N)
-    
-    y=3.4.*g.(3.6.*t.-4.8)
-    energy=sum(y.^2)
+    g(t) = 4 * abs(t - floor(t+3/4)+1/4)-1
+    t=LinRange(t1,)
 end
 rozwiazanie()
