@@ -3,7 +3,7 @@ using CairoMakie
 function square_wave(t::AbstractVector)::Vector{Float64}
     sygn = similar(t, Float64)  
     for (i, ti) in enumerate(t)
-        sygn[i] = sign(sin(2pi*ti))
+        sygn[i] = sign(sin(2*π*ti))
     end
     return sygn
 end

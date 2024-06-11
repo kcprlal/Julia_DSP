@@ -1,6 +1,6 @@
 function idft(X::AbstractVector)::Vector
     N=length(X)
-    result = zeros(N)
+    result = zeros(ComplexF64,N)
     for k in 0:N-1
         A=0
         for n in 0:N-1
@@ -11,9 +11,8 @@ function idft(X::AbstractVector)::Vector
     return result
  end
 
-x=[70.8 - 0.0im
-16.4678787077 - 14.8364816542im
--1.8678787077 - 9.1694499358im
--1.8678787077 + 9.1694499358im
-16.4678787077 + 14.8364816542im]
+x=[0.0825 - 0.09249999999999997im
+-0.7475 + 0.4874999999999999im
+-0.2375 + 0.26249999999999996im
+-0.7475 - 0.4874999999999999im]
 y=idft(x)

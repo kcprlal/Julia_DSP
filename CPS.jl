@@ -18,52 +18,52 @@ impuse_repeater(g::Function, t1::Real, t2::Real)::Function = fun -> g(mod(fun - 
 
 function ramp_wave_bl(t; A=1.0, T=1.0, band=20.0)
     signal = 0.0
-    ω = 2π / T
-    n = floor(Int, B * T / 2)
-
-    for k in 1:n
-        signal += -2*A/π^2 * (-1)^k/k * sin(ω*k*t)
+    ω = 2 * π / T 
+    k = 1
+    while (ω*k) < band *2π
+        signal += -2*A/π * (-1)^k * sin(ω*k*t)/k
+        k += 1
     end
-
     return signal
 end
 
 function sawtooth_wave_bl(t; A=1.0, T=1.0, band=20.0)
     signal = 0.0
-    ω = 2π / T
-    n = floor(Int, band * T / 2)
-
-    for k in 1:n
-        signal += 2*A/π^2 * (-1)^k/k * sin(ω*k*t)
+    ω = 2 * π / T  
+    k = 1
+    while (ω*k) < band *2π
+        signal += 2*A/π * (-1)^k * sin(ω*k*t)/k
+        k += 1
     end
-
     return signal
 end
 
 function triangular_wave_bl(t; A=1.0, T=1.0, band=20.0)
     signal = 0.0
-    n = floor(Int, band * T / 2)
-    ω=2*π/T
-    for k in 1:n
-        signal += -8*A/π^2 * (-1)^k/(2*k-1)^2 * sin(ω*(2*k-1)*t)
+    ω = 2 * π / T  
+    k = 1
+    while (ω*k) < band *2π
+        signal += -8*A/(π^2)*(-1)^k/((2k-1)^k)*sin(ω*(2k-1)*t)
+        k += 1
     end
-
     return signal
 end
 
 function square_wave_bl(t; A=1.0, T=1.0, band=20.0)
     signal = 0.0
-    n = floor(Int, band * T / 2)
-    ω=2*π/T
-    for k in 0:n
-        signal += 4*A/π * 1/(2*k-1) * sin(ω*(2*k-1)*t)
+    ω = 2 * π / T  
+    k = 1
+    while (ω*k) < band *2π
+        signal += 4*A/π*1/(2k-1)*sin(ω*(2k-1)*t)
+        k += 1
     end
-
     return signal
 end
 
 function pulse_wave_bl(t; ρ=0.2, A=1.0, T=1.0, band=20.0)
-    missing
+    signal = 0.0
+    signal = (sawtooth_wave_bl(t - (T / 2); A, T, band) - sawtooth_wave_bl(t - ((T / 2) + ρ); A, T, band)) + (2 * A * ρ)
+    return signal
 end
 
 
@@ -315,11 +315,11 @@ end
 
 fftfreq(N::Integer, fs::Real)::Vector = [(n < N/2 ? n*(fs/N) : (n-N)*(fs/N)) for n in 0:(N-1)]
 rfftfreq(N::Integer, fs::Real)::Vector = [n * (fs / N) for n in 0:(N-1)/2]
-amplitude_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = missing
-power_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = missing
-psd(x::AbstractVector, w::AbstractVector=rect(length(x)), fs::Real=1.0)::Vector = missing
+amplitude_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = abs.(dft(x.*w))
+power_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = (abs.(dft(x.*w)).^2)./length(x)
+psd(x::AbstractVector, w::AbstractVector=rect(length(x)), fs::Real=1.0)::Vector = abs.(dft(x.*w)).^2/(sum(w.^2)*fs)
 
-function periodogram(x::AbstractVector, w::AbstractVector=rect(length(x)), fs::Real=1.0)::Vector
+function periodogram(x::AbstractVector, w::AbstractVector=rect(length(x)),L::Integer = 0, fs::Real=1.0)::Vector
     missing
 end
 
@@ -346,12 +346,63 @@ function conv(f::Vector, g::Vector)::Vector
     return y
 end
 
+function dftconv(x::AbstractVector)::Vector
+    N=length(x)
+    result = zeros(Complex,N)
+    for k in 0:N-1
+        A=0
+        for n in 0:N-1
+            A+=x[n+1]*exp(-im*(2π/N)*k*n)
+        end
+        result[k+1]=A
+    end
+    return result
+end
+
+function idftconv(X::AbstractVector)::Vector
+    N = length(X)
+    result = zeros(Complex, N)
+    for k in 0:N-1
+        A = 0
+        for n in 0:N-1
+            A += X[n+1] *(1/N)* exp(im * (2π / N) * k * n)
+        end
+        result[k+1] = A
+    end
+    return result
+end
+
 function fast_conv(f::Vector, g::Vector)::Vector
-    missing
+    N=length(f)+length(g)-1
+    newf = [f;zeros(N-length(f))]
+    newg = [g;zeros(N-length(g))]
+    F=dftconv(newf)
+    G=dftconv(newg)
+    Y=F.*G
+    y=real(idftconv(Y))
+    return y
 end
 
 function overlap_add(x::Vector, h::Vector, L::Integer)::Vector
-    missing
+    N = length(x)
+    M = length(h)
+    P = L + M - 1
+    n = ceil(Int, N / L)
+    
+    hp = [h; zeros(P - M)]
+
+    y = zeros(Float64, N + M - 1)
+
+    for k in 0:n-1
+        st = k * L + 1
+        en = min((k + 1) * L, N)
+        fse = f[st:en]
+        fp = vcat(fse, zeros(P - length(fse)))
+        seconv = idft(dft(fp) .* dft(hp))
+        y[st:st+P-1] += real(seconv)
+    end
+
+    return y
 end
 
 function overlap_save(x::Vector, h::Vector, L::Integer)::Vector
@@ -375,19 +426,35 @@ function lti_phase(f::Real, b::Vector, a::Vector)::Real
 end
 
 function firwin_lp_I(order, F0)
-    missing
+    result=zeros(ComplexF64,order)
+    for n in -order/2:oreder/2
+        result[n] = 2*F0*sinc(2*F0*n)
+    end
+    return result
 end
 
 function firwin_hp_I(order, F0)
-    missing
+    result=zeros(ComplexF64,order)
+    for n in -order/2:oreder/2
+        result[n] = kronecker(Int(n))-2*F0*sinc(2*F0*n)
+    end
+    return result
 end
 
 function firwin_bp_I(order, F1, F2)
-    missing
+    result=zeros(ComplexF64,order)
+    for n in -order/2:order/2
+        result[n] = 2*F2*sinc(2*F2*n)-2*F1*sinc(2*F1*n)
+    end
+    return result
 end
 
 function firwin_bs_I(order, F1, F2)
-    missing
+    result=zeros(ComplexF64,order)
+    for n in -order/2:order/2
+        result[n] = kronecker(Int(n))-(2*F2*sinc(2*F2*n)-2*F1*sinc(2*F1*n))
+    end
+    return result
 end
 
 function firwin_lp_II(N, F0)
@@ -395,6 +462,10 @@ function firwin_lp_II(N, F0)
 end
 
 function firwin_bp_II(N, F1, F2)
+    missing
+end
+
+function resample(x::Vector, M::Int, N::Int)
     missing
 end
 

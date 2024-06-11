@@ -1,32 +1,17 @@
+firwin_bs_I(order::Integer, F1::Float64, F2::Float64)::Vector = [kronecker(Int(n)) - (2F2 * sinc(2F2 * n) - 2F1 * sinc(2F1 * n)) for n in -order/2:order/2]
+kronecker(n::Integer)::Real = n == 0 ? (return 1) : (return 0)
+hamming(M::Integer)::AbstractVector{<:Real} = [0.54 + 0.46cos(2π * n / (2M + 1)) for n = -M:M]
+triang(M::Integer)::AbstractVector{<:Real} = [1 - abs(n) / (M + 1) for n = -M:M]
 function rozwiazanie(;
-    order::Int = 96,
-    fp::Float64 = 191.0,
-    f1::Float64 = 10.5,
-    f2::Float64 = 20.06,
-    z::Vector{Int} = [92, 41, 40, 59, 25, 90],
+    order::Int = 40,
+    fp::Float64 = 148.0,
+    f1::Float64 = 37.74,
+    f2::Float64 = 68.82,
+    z::Vector{Int} = [27, 21, 27, 19, 30],
 )
-    n= -order/2:1:(order/2-1)
-    
-    h1 = @.sin(2*pi*f1/fp*n)./(pi*n)
-    for i in 1:order
-        if n[i]==0
-            h1[i]=2*f1/fp
-        end
-    end
-
-    h2 = @.sin(2*pi*f2/fp*n)/(pi*n)
-    for i in 1:order
-        if n[i]==0
-            h2[i]=2*f2/fp
-        end
-    end
-
-    hpp=h2.-h1
-
-    hamming(N::Integer)::AbstractVector{<:Real} = 0.54 .+ 0.46 .*cos.(2π * LinRange(0,N,N) ./ (2*N+1))
-    w=hamming(order)
-    hh=hpp.*w
-    return sum(hh[z])
+    h = firwin_bs_I(order, f1 / fp, f2 / fp) # lp/hp/bp/bs
+    h = h .* triang(Int(order / 2)) # triang/hamming/hanning/blackman
+    h_z = [h[i] for i in z]
+    return sum(h_z)
 end
 rozwiazanie()
--0.04788117950915512

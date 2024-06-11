@@ -1,4 +1,4 @@
-function conv(f::Vector, g::Vector)::Float64
+function conv(f::Vector, g::Vector)::Vector
     y = zeros(Float64,length(f)+length(g)-1)
     ylen=length(y)
     for n in 1:ylen
@@ -7,7 +7,7 @@ function conv(f::Vector, g::Vector)::Float64
         end
     end
 
-    return sum(y.^2)
+    return y
 end
 
 # Przykładowe dane

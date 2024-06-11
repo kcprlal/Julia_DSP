@@ -11,9 +11,10 @@ function interp(m,s,ker::Function=sinc)
             res+=s[i]*ker((fun-m[i])/dm)
         end
         return res
-        end 
+    end 
     end
     g=interp(m,s)
     result=sum(g.(t))
+    return result
 end
 rozwiazanie()

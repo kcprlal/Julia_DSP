@@ -12,6 +12,6 @@ function dft(x::AbstractVector)::Vector
     return wynik
 end
 rect(N::Integer)::AbstractVector{<:Real} = return ones(N)
-amplitude_spectrum(x::AbstractVector, w::AbstractVector=rect(length(x)))::Vector = abs.(dft(x.*w))
+psd(x::AbstractVector, w::AbstractVector=rect(length(x)), fs::Real=1.0)::Vector = abs.(dft(x.*w)).^2/ (sum(w.^2)*fs)
 x = Complex{Float64}[1.0 + 1.0im, 2.0 + 2.0im, 3.0 + 3.0im, 4.0 + 4.0im]
-amplitude_spectrum(x)
+psd(x)

@@ -7,6 +7,6 @@ end
 
 N = 5
 sampl = LinRange(0,N,N)
-#lines(sampl, triang(N))
-triang(N)
+lines(sampl, triang(N))
+#triang(N)
 

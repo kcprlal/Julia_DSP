@@ -1,13 +1,17 @@
+function ltia(a,b,f)
+    M=length(b)
+    N=length(a)
+    licznik=sum([b[m+1]*exp(-2im*f*pi*m) for m in 0:M-1])
+    mian=sum(   )
+    return abs(licznik/mian)
+end
+
 function rozwiazanie(;
-    fp::Float64=360.44,
-    t1::Float64=-2.7,
-    N::Int=58,
+    b::Vector{Float64} = [0.01790522907755109, 0.08952614538775544, 0.17905229077551088, 0.17905229077551088, 0.08952614538775544, 0.01790522907755109],
+    a::Vector{Float64} = [1.0, -1.182869923850837, 1.124607313530783, -0.49193120719999484, 0.1380961947896992, -0.01493504678801563],
+    F::Vector{Float64} = [0.02, 0.08, 0.09, 0.14, 0.29, 0.3],
 )
-    g = t -> sign(sin(2pi*t))
-    t = t = range(; start=t1, step=(1 / fp), length=N)
-    y = 1.5 * g.(2.8 .* t .- 4.1)
-    energy = sum(abs2, y)
-    return energy
-    130.5
+    amplitudes = [ltia(a,b,f) for f in F]
+    return sum(amplitudes)/length(amplitudes)
 end
 rozwiazanie()
